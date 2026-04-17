@@ -1,12 +1,15 @@
 import MenuItem from "./components/MenuItem"
 import OrderContents from "./components/OrderContents"
+import { useReducer } from "react"
+import { orderReducer, initialState } from "./reducers/order-reducers"
 import TipPercentageForm from "./components/TipPercentageForm"
 import OrderTotals from "./components/OrderTotals"
 import { menuItems } from "./data/db"
-import useOrder from "./hooks/useOrder"
+
 
 function App() {
-    const{order, tip, setTip, addItem, removeItem, saveOrder} = useOrder()
+    const [state, dispatch] = useReducer (orderReducer, initialState)
+
     return (
         <>
             <header className="bg-cyan-600 py-5">
@@ -21,30 +24,30 @@ function App() {
                             <MenuItem
                                 key={item.id}
                                 item={item}
-                                addItem={addItem}
+                                dispatch={dispatch}
                             />
                         ))}
                     </div>
                 </div>
                 <div className="border-gray-300 border-3 rounded-lg p-5 space-y-10">
-                    { order.length === 0 
+                    { state.order.length === 0 
                         ? <p className="text-center font-bold text-2xl mt-10">La Orden Esta Vacía</p>
                         :
                         <>
                             <OrderContents
-                                order={order}
-                                removeItem={removeItem}
+                                order={state.order}
+                                dispatch={dispatch}
                             />
 
                             <TipPercentageForm
-                                setTip={setTip}
-                                tip={tip}
+                                dispatch={dispatch}
+                                tip={state.tip}
                             />
 
                             <OrderTotals
-                                tip={tip}
-                                order={order}
-                                saveOrder= {saveOrder}
+                                tip={state.tip}
+                                order={state.order}
+                                dispatch= {dispatch}
                             />
                         </>
 }
